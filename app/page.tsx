@@ -837,8 +837,8 @@ export default function Page() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="inline-block rounded-xl px-3 py-2 controls-style">
-                <div className="text-2xl font-semibold text-2xl text-strong lg:text-slate-900">Sudoku Reveal</div>
-                <div className="text-sm text-strong lg:text-slate-700">Some obstacles are meant to be solved. Not alone. But together.</div>
+                <div className="text-2xl font-semibold header-title-mobile">Sudoku Reveal</div>
+                <div className="text-sm header-subtitle-mobile">Some obstacles are meant to be solved. Not alone. But together.</div>
               </div>
             </div>
 
@@ -848,8 +848,8 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
-            <div className="rounded-2xl controls-style p-4 sm:p-5 shadow-sm">
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px] mobile-grid-wrapper">
+            <div className="rounded-2xl controls-style p-4 sm:p-5 shadow-sm mobile-grid-puzzle">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="text-sm text-slate-500">{PUZZLES[puzzleIndex].name}</div>
@@ -964,7 +964,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="rounded-2xl controls-style p-5 shadow-sm">
+            <div className="rounded-2xl controls-style p-5 shadow-sm mobile-grid-sidebar">
               <div className="text-base font-semibold text-slate-900">A note, not a spoiler</div>
               <div className="mt-2 text-sm text-slate-700">
                 Some obstacles are meant to be solved.
