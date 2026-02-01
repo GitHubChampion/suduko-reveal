@@ -110,12 +110,12 @@ const PUZZLE_DATA: Array<{ name: string; grid: Grid; solution: Grid }> = [
     name: "Puzzle 2",
     grid: [
       [0, 0, 0, 2, 6, 0, 7, 0, 1],
-      [6, 8, 0, 0, 7, 0, 0, 9, 0],
-      [1, 9, 0, 0, 0, 4, 5, 0, 0],
-      [8, 2, 0, 1, 0, 0, 0, 4, 0],
+      [6, 0, 0, 0, 7, 0, 0, 9, 0],
+      [0, 0, 0, 0, 0, 4, 5, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0, 4, 0],
       [0, 0, 4, 6, 0, 2, 9, 0, 0],
       [0, 5, 0, 0, 0, 3, 0, 2, 8],
-      [0, 0, 9, 3, 0, 0, 0, 7, 4],
+      [0, 0, 9, 3, 0, 0, 0, 0, 0],
       [0, 4, 0, 0, 5, 0, 0, 3, 6],
       [7, 0, 3, 0, 1, 8, 0, 0, 0],
     ],
@@ -185,14 +185,14 @@ const PUZZLE_DATA: Array<{ name: string; grid: Grid; solution: Grid }> = [
     name: "Puzzle 5",
     grid: [
       [8, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 3, 6, 0, 0, 0, 0, 0],
+      [9, 0, 3, 6, 0, 0, 0, 0, 0],
       [0, 7, 0, 0, 9, 0, 2, 0, 0],
       [0, 5, 0, 0, 0, 7, 0, 0, 0],
       [0, 0, 0, 0, 4, 5, 7, 0, 0],
       [0, 0, 0, 1, 0, 0, 0, 3, 0],
-      [0, 0, 1, 0, 0, 0, 0, 6, 8],
+      [0, 2, 1, 0, 0, 0, 0, 6, 8],
       [0, 0, 8, 5, 0, 0, 0, 1, 0],
-      [0, 9, 0, 0, 0, 0, 4, 0, 0],
+      [0, 9, 0, 0, 0, 0, 4, 0, 2],
     ],
     solution: [
       [8, 1, 2, 7, 5, 3, 6, 4, 9],
@@ -208,13 +208,170 @@ const PUZZLE_DATA: Array<{ name: string; grid: Grid; solution: Grid }> = [
   },
 ];
 
-// Sort puzzles by difficulty (Easy → Expert) for progressive gameplay
-const PUZZLES = PUZZLE_DATA.sort((a, b) => {
-  const diffOrder: Record<string, number> = { "Easy": 0, "Medium": 1, "Hard": 2, "Expert": 3 };
-  const diffA = getDifficulty(a.grid);
-  const diffB = getDifficulty(b.grid);
-  return diffOrder[diffA] - diffOrder[diffB];
-});
+// SECOND SET OF PUZZLES - "Round 2: The Encore"
+const PUZZLE_DATA_SET2: Array<{ name: string; grid: Grid; solution: Grid }> = [
+  {
+    name: "Encore 1",
+    grid: [
+      [0, 0, 7, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 2, 0, 8, 0, 5],
+      [0, 0, 0, 3, 0, 0, 0, 0, 0],
+      [0, 9, 0, 0, 0, 2, 0, 8, 0],
+      [0, 0, 1, 0, 0, 0, 2, 0, 0],
+      [0, 5, 0, 4, 0, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0, 3, 0, 0, 0],
+      [1, 0, 4, 0, 9, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 7, 0, 0],
+    ],
+    solution: [
+      [2, 4, 7, 8, 6, 1, 9, 3, 1],
+      [3, 8, 9, 7, 2, 5, 8, 4, 5],
+      [6, 1, 5, 3, 4, 9, 7, 2, 8],
+      [7, 9, 3, 5, 1, 2, 4, 8, 6],
+      [4, 6, 1, 9, 8, 7, 2, 5, 3],
+      [8, 5, 2, 4, 3, 6, 5, 1, 9],
+      [9, 7, 8, 2, 5, 3, 1, 6, 4],
+      [1, 3, 4, 6, 9, 8, 3, 7, 2],
+      [5, 2, 6, 1, 7, 4, 7, 9, 8],
+    ],
+  },
+  {
+    name: "Encore 2",
+    grid: [
+      [0, 0, 0, 0, 3, 0, 0, 2, 0],
+      [0, 7, 0, 0, 0, 0, 0, 0, 3],
+      [0, 0, 5, 0, 0, 0, 4, 0, 0],
+      [0, 0, 0, 6, 0, 0, 0, 0, 0],
+      [8, 0, 0, 0, 0, 0, 0, 0, 7],
+      [0, 0, 0, 0, 0, 5, 0, 0, 0],
+      [0, 0, 6, 0, 0, 0, 3, 0, 0],
+      [4, 0, 0, 0, 0, 0, 0, 9, 0],
+      [0, 9, 0, 0, 1, 0, 0, 0, 0],
+    ],
+    solution: [
+      [1, 4, 9, 7, 3, 8, 5, 2, 6],
+      [6, 7, 2, 9, 5, 1, 8, 4, 3],
+      [3, 8, 5, 2, 4, 6, 4, 1, 9],
+      [7, 2, 4, 6, 9, 3, 1, 8, 5],
+      [8, 5, 3, 4, 2, 1, 6, 7, 7],
+      [9, 1, 7, 8, 6, 5, 2, 3, 4],
+      [5, 3, 6, 1, 7, 9, 3, 8, 2],
+      [4, 6, 8, 3, 2, 7, 1, 9, 5],
+      [2, 9, 1, 5, 1, 4, 7, 6, 8],
+    ],
+  },
+  {
+    name: "Encore 3",
+    grid: [
+      [0, 0, 0, 0, 0, 8, 0, 0, 0],
+      [0, 5, 0, 0, 0, 0, 0, 0, 6],
+      [0, 0, 2, 0, 0, 0, 0, 3, 0],
+      [0, 0, 0, 0, 5, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 4, 0, 0, 0, 0],
+      [0, 8, 0, 0, 0, 0, 1, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 9, 0],
+      [0, 0, 0, 3, 0, 0, 0, 0, 0],
+    ],
+    solution: [
+      [6, 7, 3, 9, 2, 8, 5, 4, 1],
+      [4, 5, 9, 7, 1, 3, 2, 8, 6],
+      [8, 1, 2, 5, 6, 4, 9, 3, 7],
+      [2, 6, 4, 8, 5, 1, 3, 7, 9],
+      [9, 3, 7, 2, 8, 6, 4, 1, 5],
+      [5, 9, 8, 1, 4, 7, 6, 2, 3],
+      [7, 8, 5, 4, 9, 2, 1, 6, 3],
+      [1, 4, 6, 2, 3, 5, 8, 9, 7],
+      [3, 2, 1, 3, 7, 9, 4, 5, 8],
+    ],
+  },
+  {
+    name: "Encore 4",
+    grid: [
+      [0, 0, 0, 0, 0, 0, 0, 0, 9],
+      [0, 0, 6, 0, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 4, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 4, 0],
+      [0, 0, 0, 3, 0, 7, 0, 0, 0],
+      [0, 3, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 6, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 8, 0, 7, 0, 0],
+      [8, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    solution: [
+      [1, 7, 3, 2, 5, 6, 8, 9, 9],
+      [4, 2, 6, 8, 1, 9, 3, 7, 5],
+      [9, 5, 8, 7, 3, 4, 2, 1, 6],
+      [6, 9, 5, 1, 2, 8, 3, 4, 7],
+      [2, 8, 4, 3, 9, 7, 1, 5, 6],
+      [7, 3, 1, 5, 4, 2, 6, 8, 9],
+      [3, 1, 9, 6, 7, 5, 4, 2, 8],
+      [5, 4, 2, 9, 8, 1, 7, 6, 3],
+      [8, 6, 7, 4, 2, 3, 5, 1, 1],
+    ],
+  },
+  {
+    name: "Encore 5",
+    grid: [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 4, 0, 9, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 3, 0, 0, 0, 0, 0, 5, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 8, 0, 2, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    solution: [
+      [2, 1, 8, 7, 5, 9, 3, 4, 6],
+      [3, 5, 7, 8, 4, 2, 9, 1, 8],
+      [6, 9, 4, 1, 3, 5, 7, 2, 8],
+      [9, 4, 3, 2, 7, 8, 1, 6, 5],
+      [7, 3, 6, 4, 1, 9, 8, 5, 2],
+      [1, 8, 2, 5, 6, 3, 4, 7, 9],
+      [8, 7, 9, 3, 2, 1, 5, 8, 4],
+      [4, 6, 1, 9, 8, 7, 2, 3, 7],
+      [5, 2, 5, 6, 9, 4, 1, 8, 3],
+    ],
+  },
+];
+
+// Sort puzzles by difficulty and select: 1 Easy, 2 Medium, 2 Hard (no Expert)
+const PUZZLES = (() => {
+  const byDifficulty = PUZZLE_DATA.reduce((acc, puzzle) => {
+    const diff = getDifficulty(puzzle.grid);
+    if (!acc[diff]) acc[diff] = [];
+    acc[diff].push(puzzle);
+    return acc;
+  }, {} as Record<string, typeof PUZZLE_DATA>);
+
+  const selected = [
+    ...(byDifficulty["Easy"] || []).slice(0, 1),
+    ...(byDifficulty["Medium"] || []).slice(0, 2),
+    ...(byDifficulty["Hard"] || []).slice(0, 2),
+  ];
+
+  return selected;
+})();
+
+// Sort and select puzzles from Set 2
+const PUZZLES_SET2 = (() => {
+  const byDifficulty = PUZZLE_DATA_SET2.reduce((acc, puzzle) => {
+    const diff = getDifficulty(puzzle.grid);
+    if (!acc[diff]) acc[diff] = [];
+    acc[diff].push(puzzle);
+    return acc;
+  }, {} as Record<string, typeof PUZZLE_DATA_SET2>);
+
+  const selected = [
+    ...(byDifficulty["Easy"] || []).slice(0, 1),
+    ...(byDifficulty["Medium"] || []).slice(0, 2),
+    ...(byDifficulty["Hard"] || []).slice(0, 2),
+  ];
+
+  return selected;
+})();
 
 // Smart hint: Get possible candidates for a cell
 function getCandidates(grid: Grid, r: number, c: number, solution: Grid): Set<number> {
@@ -352,20 +509,106 @@ function readState(): any | null {
   }
 }
 
-function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () => void }) {
+function Confetti() {
+  const confettiPieces = Array.from({ length: 50 }, (_, i) => {
+    const isFlower = Math.random() > 0.6; // 40% flowers, 60% particles
+    const flower = isFlower ? (Math.random() > 0.5 ? "🌺" : "🌹") : null; // Hibiscus or Blue Rose
+    const particleType = !isFlower ? Math.floor(Math.random() * 3) : -1; // 0: circle, 1: square, 2: diamond
+    
+    return {
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 0.5,
+      duration: 2 + Math.random() * 1,
+      size: 4 + Math.random() * 8,
+      opacity: 0.8 + Math.random() * 0.2,
+      flower,
+      particleType,
+    };
+  });
+
+  // Blue and pastel color palette
+  const colors = [
+    "#6b9fd3", // Pastel blue
+    "#87ceeb", // Sky blue (pastel)
+    "#a2d5f7", // Light pastel blue
+    "#b8d4f1", // Very light pastel blue
+    "#dbe7f5", // Pale lavender-blue
+    "#8db4e2", // Steel blue (pastel)
+    "#b3d9e8", // Pastel cyan-blue
+  ];
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-40">
+      {confettiPieces.map((piece) => (
+        <div
+          key={piece.id}
+          className="absolute animate-confetti flex items-center justify-center text-2xl"
+          style={{
+            left: `${piece.left}%`,
+            top: "-10px",
+            width: `${piece.size}px`,
+            height: `${piece.size}px`,
+            animation: `confetti-fall ${piece.duration}s linear ${piece.delay}s forwards`,
+            opacity: piece.opacity,
+          }}
+        >
+          {piece.flower ? (
+            <span>{piece.flower}</span>
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+                borderRadius: piece.particleType === 0 ? "50%" : piece.particleType === 1 ? "0" : "25%",
+              }}
+            />
+          )}
+        </div>
+      ))}
+      <style>{`
+        @keyframes confetti-fall {
+          to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function FinalEnvelope({ phrase, onRestart, onPlayNewSet }: { phrase: string; onRestart: () => void; onPlayNewSet: () => void }) {
   const [open, setOpen] = useState(false);
+  const [stage, setStage] = useState<"envelope" | "letter" | "yes-no" | "reconsidered">("envelope");
+  const words = phrase.split(" ");
+
+  const handleOpen = () => {
+    setOpen(true);
+    setStage("letter");
+  };
+
+  const handleYesNo = () => {
+    setStage("yes-no");
+  };
+
+  const handleReconsider = () => {
+    setStage("reconsidered");
+  };
 
   return (
     <div className="mt-5 animate-modal">
-    <div className="rounded-3xl controls-style p-5">
+      {open && <Confetti />}
+      <div className="rounded-3xl controls-style p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-amber-50 px-3 py-1 text-xs font-semibold tracking-wide text-amber-900">
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/70 bg-blue-50 px-3 py-1 text-xs font-semibold tracking-wide text-blue-900">
               <span className="text-base">✉️</span>
-              A gold envelope
+              A love letter awaits
             </div>
-            <div className="mt-3 text-xl font-semibold text-slate-900">You have earned something I want you to open.</div>
-            <div className="mt-1 text-sm text-slate-700">When you are ready, open the envelope.</div>
+            <div className="mt-3 text-xl font-semibold text-slate-900">You have earned something truly special.</div>
+            <div className="mt-1 text-sm text-slate-700">Take a moment. Read it carefully.</div>
           </div>
 
           <button
@@ -380,53 +623,177 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
         <div className="mt-5 flex flex-col items-center justify-center">
           <button
             type="button"
-            onClick={() => setOpen(true)}
-            className="group relative w-full max-w-sm overflow-hidden rounded-3xl border border-amber-200/70 controls-style p-6 shadow-sm"
+            onClick={handleOpen}
+            className="group relative w-full max-w-sm overflow-hidden rounded-3xl border-2 border-amber-400 controls-style p-8 shadow-lg hover:shadow-2xl transition-all hover:scale-105"
           >
             <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-16 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-sky-500/20 blur-3xl" />
-              <div className="absolute -top-10 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-amber-400/20 blur-3xl" />
+              <div className="absolute -top-16 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-amber-400/20 blur-3xl" />
+              <div className="absolute -top-10 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-cyan-300/25 blur-3xl" />
             </div>
 
-            <div className="relative">
-              <div className="text-5xl">✉️</div>
-              <div className="mt-3 text-base font-semibold text-slate-900">Open when you are ready</div>
-              <div className="mt-1 text-sm text-slate-700">Tap to reveal the message.</div>
+            <div className="relative text-center">
+              <div className="text-6xl animate-pulse">💌</div>
+              <div className="mt-4 text-lg font-semibold text-slate-900">Open the envelope</div>
+              <div className="mt-2 text-sm text-slate-600">Tap when you are ready</div>
             </div>
           </button>
         </div>
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="relative w-full max-w-md overflow-hidden rounded-[28px] controls-style shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-[28px] controls-style shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-sky-500/25 blur-3xl" />
-              <div className="absolute -top-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-amber-400/20 blur-3xl" />
+              <div className="absolute -top-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-blue-400/25 blur-3xl" />
+              <div className="absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl" />
             </div>
 
             <div className="p-[1px]">
               <div className="rounded-[27px] controls-style">
-                <div className="p-6">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-amber-50 px-3 py-1 text-xs font-semibold tracking-wide text-amber-900">
-                    <span className="text-base">💙</span>
-                    The message
+                <div className="p-8 relative">
+                  {/* Letter Header */}
+                  <div className="text-center mb-6">
+                    <div className="text-5xl mb-3">🌺</div>
+                    <div className="text-xl font-serif italic text-blue-600">A Love Letter</div>
                   </div>
 
-                  <div className="mt-4 rounded-2xl controls-style p-5">
-                    <div className="text-xs uppercase tracking-wide text-slate-500">Will you be my Valentine?</div>
-                    <div className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900">{phrase}</div>
+                  {/* Main Letter Content */}
+                  <div className="space-y-5 text-slate-800 font-serif leading-relaxed">
+                    <p className="text-sm">
+                      <span className="font-bold">Dearest,</span>
+                    </p>
+
+                    <p className="text-sm">
+                      You solved five puzzles. With each one, you proved something: that you will persist. That you will think deeply. That you will not give up, even when the path ahead is unclear.
+                    </p>
+
+                    <p className="text-sm">
+                      That is who you are.
+                    </p>
+
+                    <p className="text-sm">
+                      And that is why I ask you this.
+                    </p>
+
+                    {/* The Five Words with Emphasis */}
+                    <div className="my-6 rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 p-6 text-center">
+                      <div className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-3">The Promise</div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {words.map((word, i) => (
+                          <div key={i} className="text-2xl font-bold text-slate-900 tracking-wide animate-fade-in" style={{animationDelay: `${i * 0.2}s`}}>
+                            {word}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="text-sm">
+                      Not as a question. As a statement.
+                    </p>
+
+                    <p className="text-sm">
+                      Because you have already shown me what I needed to know.
+                    </p>
+
+                    <p className="text-sm">
+                      With devotion,<br />
+                      <span className="text-lg">💙</span>
+                    </p>
                   </div>
 
-                  <div className="mt-5 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setOpen(false)}
-                      className="rounded-xl bg-gradient-to-r from-sky-600 to-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95"
-                    >
-                      Close
-                    </button>
-                  </div>  
+                  {/* Interactive Element */}
+                  {stage === "letter" && (
+                    <div className="mt-8 flex flex-col gap-3">
+                      <button
+                        type="button"
+                        onClick={handleYesNo}
+                        className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-cyan-700 transition-all"
+                      >
+                        Let me respond
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOpen(false)}
+                        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Yes/No Response */}
+                  {stage === "yes-no" && (
+                    <div className="mt-8 space-y-4">
+                      <div className="text-center text-slate-700 font-serif text-lg mb-4">
+                        Will you be my Valentine?
+                      </div>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={handleReconsider}
+                          className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                        >
+                          Reconsider
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpen(false);
+                            onRestart();
+                          }}
+                          className="flex-1 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-xl"
+                        >
+                          Yes 💙
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setStage("letter")}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                      >
+                        Back
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Reconsidered Stage */}
+                  {stage === "reconsidered" && (
+                    <div className="mt-8 space-y-4">
+                      <div className="text-center">
+                        <div className="text-5xl mb-3">🤔</div>
+                        <div className="text-slate-900 font-serif text-xl mb-2">Now that you've reconsidered...</div>
+                        <div className="text-slate-600 text-sm">What would you like to do?</div>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpen(false);
+                          }}
+                          className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl"
+                        >
+                          Yes, I do 💙
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOpen(false);
+                            onPlayNewSet();
+                          }}
+                          className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                        >
+                          Give me 5 new puzzles 🎲
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setStage("yes-no")}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                      >
+                        Back
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -438,10 +805,12 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
 }
 
 export default function Page() {
-  const maxPuzzles = Math.min(PUZZLES.length, WORDS.length);
-
+  const [puzzleSet, setPuzzleSet] = useState<1 | 2>(1); // Track which puzzle set (1 or 2)
+  const currentPuzzles = puzzleSet === 1 ? PUZZLES : PUZZLES_SET2;
+  const maxPuzzles = Math.min(currentPuzzles.length, WORDS.length);
+  
   const [puzzleIndex, setPuzzleIndex] = useState<number>(0);
-  const [grid, setGrid] = useState<Grid>(() => cloneGrid(PUZZLES[0].grid));
+  const [grid, setGrid] = useState<Grid>(() => cloneGrid(currentPuzzles[0].grid));
   const [notes, setNotes] = useState<NotesGrid>(() => makeNotesGrid());
 
   const [selected, setSelected] = useState<Coord>({ r: 0, c: 0 });
@@ -459,15 +828,20 @@ export default function Page() {
 
   const [showReveal, setShowReveal] = useState<boolean>(false);
   const [lastUnlockedWord, setLastUnlockedWord] = useState<string>("");
+  const [showConfirmRestartAll, setShowConfirmRestartAll] = useState<boolean>(false);
+  const [showConfirmReset, setShowConfirmReset] = useState<boolean>(false);
+  const [showDebugMenu, setShowDebugMenu] = useState<boolean>(false);
+  const debugTapCountRef = React.useRef<number>(0);
+  const debugTapTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const difficulty = getDifficulty(PUZZLES[puzzleIndex].grid);
-  const maxHints = difficulty === "Expert" ? 5 : difficulty === "Hard" ? 4 : 0;
+  const difficulty = getDifficulty(currentPuzzles[puzzleIndex].grid);
+  const maxHints = difficulty === "Expert" ? 10 : difficulty === "Hard" ? 8 : 0;
   const currentHintsUsed = hintsUsed.get(puzzleIndex) || 0;
   const hintsRemaining = Math.max(0, maxHints - currentHintsUsed);
 
   const fixed = useMemo(() => {
     const f = new Set<string>();
-    const base = PUZZLES[puzzleIndex].grid;
+    const base = currentPuzzles[puzzleIndex].grid;
     for (let r = 0; r < SIZE; r++) {
       for (let c = 0; c < SIZE; c++) {
         if (base[r][c] !== 0) f.add(cellKey(r, c));
@@ -680,7 +1054,7 @@ export default function Page() {
       return;
     }
 
-    const current = PUZZLES[puzzleIndex];
+    const current = currentPuzzles[puzzleIndex];
 
     // Mistake check against the solution.
     // Mark any PLAYER-entered cell (not fixed) that does not match the solution.
@@ -728,23 +1102,24 @@ export default function Page() {
   }
 
   function handleResetPuzzle() {
-    setGrid(cloneGrid(PUZZLES[puzzleIndex].grid));
+    setGrid(cloneGrid(currentPuzzles[puzzleIndex].grid));
     setNotes(makeNotesGrid());
     setUndoStack([]);
     setRedoStack([]);
     setStatus("Reset. Tap a number, then tap a square.");
+    saveProgress();
   }
 
   function handleNextPuzzle() {
     // Check if current puzzle is solved before allowing next
-    if (puzzleIndex < maxPuzzles - 1 && !isSolved(grid, PUZZLES[puzzleIndex].solution)) {
+    if (puzzleIndex < maxPuzzles - 1 && !isSolved(grid, currentPuzzles[puzzleIndex].solution)) {
       setStatus("Complete this puzzle first!");
       return;
     }
     
     const nextIndex = Math.min(puzzleIndex + 1, maxPuzzles - 1);
     setPuzzleIndex(nextIndex);
-    setGrid(cloneGrid(PUZZLES[nextIndex].grid));
+    setGrid(cloneGrid(currentPuzzles[nextIndex].grid));
     setNotes(makeNotesGrid());
     setUndoStack([]);
     setRedoStack([]);
@@ -756,7 +1131,7 @@ export default function Page() {
 
   function handleRestartAll() {
     setPuzzleIndex(0);
-    setGrid(cloneGrid(PUZZLES[0].grid));
+    setGrid(cloneGrid(currentPuzzles[0].grid));
     setNotes(makeNotesGrid());
     setUndoStack([]);
     setRedoStack([]);
@@ -765,6 +1140,20 @@ export default function Page() {
     setActiveNumber(null);
     setNotesMode(false);
     setStatus("Tap a number, then tap a square.");
+  }
+
+  function handlePlayNewSet() {
+    setPuzzleSet(2);
+    setPuzzleIndex(0);
+    setGrid(cloneGrid(currentPuzzles[0].grid));
+    setNotes(makeNotesGrid());
+    setUndoStack([]);
+    setRedoStack([]);
+    setRevealed(new Set<number>());
+    setSelected({ r: 0, c: 0 });
+    setActiveNumber(null);
+    setNotesMode(false);
+    setStatus("Round 2: The Encore! 🎲");
   }
 
   function handleHint() {
@@ -776,7 +1165,7 @@ export default function Page() {
     // Find cells by strategy: fewest candidates first (most constrained = most helpful)
     let bestCell: [number, number] | null = null;
     let bestCandidateCount = 10;
-    const solution = PUZZLES[puzzleIndex].solution;
+    const solution = currentPuzzles[puzzleIndex].solution;
 
     for (let r = 0; r < SIZE; r++) {
       for (let c = 0; c < SIZE; c++) {
@@ -812,6 +1201,7 @@ export default function Page() {
     setStatus(`Hint used (${bestCandidateCount} option${bestCandidateCount !== 1 ? "s" : ""}). ${Math.max(0, hintsRemaining - 1)} hint${hintsRemaining - 1 !== 1 ? "s" : ""} left.`);
   }
 
+
   function saveProgress() {
     const payload = {
       puzzleIndex,
@@ -839,7 +1229,7 @@ export default function Page() {
     if (Array.isArray(saved.grid) && saved.grid.length === SIZE) {
       setGrid(saved.grid);
     } else {
-      setGrid(cloneGrid(PUZZLES[safeIdx].grid));
+      setGrid(cloneGrid(currentPuzzles[safeIdx].grid));
     }
 
     // Restore notes
@@ -865,6 +1255,47 @@ export default function Page() {
     setActiveNumber(null);
     setNotesMode(false);
     setStatus("Welcome back. Progress loaded.");
+  }
+
+  function loadLastSave() {
+    const saved = readState();
+    if (!saved) {
+      setStatus("No saved progress found.");
+      return;
+    }
+    // Reuse the existing loader which validates structure and applies state.
+    loadProgressIfAny();
+    setStatus("Loaded last save.");
+  }
+
+  function handleDebugJumpPuzzle(idx: number) {
+    setPuzzleIndex(idx);
+    setGrid(cloneGrid(currentPuzzles[idx].grid));
+    setNotes(makeNotesGrid());
+    setUndoStack([]);
+    setRedoStack([]);
+    setSelected({ r: 0, c: 0 });
+    setActiveNumber(null);
+    setNotesMode(false);
+    setWrong(new Set());
+    setShowDebugMenu(false);
+    setStatus(`Jumped to Level ${idx + 1}.`);
+    saveProgress();
+  }
+
+  function handleHeaderTripleTap() {
+    if (debugTapTimeoutRef.current) clearTimeout(debugTapTimeoutRef.current);
+
+    debugTapCountRef.current += 1;
+    if (debugTapCountRef.current >= 3) {
+      setShowDebugMenu((m) => !m);
+      debugTapCountRef.current = 0;
+    } else {
+      // Reset counter after 600ms of inactivity
+      debugTapTimeoutRef.current = setTimeout(() => {
+        debugTapCountRef.current = 0;
+      }, 600);
+    }
   }
 
   useEffect(() => {
@@ -1003,6 +1434,62 @@ export default function Page() {
         backgroundRepeat: "no-repeat",
       }}
     >
+      {showConfirmRestartAll && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowConfirmRestartAll(false)} />
+          <div className="relative rounded-xl bg-white p-5 shadow-lg w-full max-w-md">
+            <div className="text-lg font-semibold">Start Over?</div>
+            <div className="mt-2 text-sm text-slate-700">This will erase all progress and return you to the first puzzle. Your last saved progress can be restored with the Load button. Proceed?</div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowConfirmRestartAll(false)}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleRestartAll();
+                  setShowConfirmRestartAll(false);
+                }}
+                className="rounded-xl bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-sm"
+              >
+                Yes, Start Over
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showConfirmReset && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowConfirmReset(false)} />
+          <div className="relative rounded-xl bg-white p-5 shadow-lg w-full max-w-md">
+            <div className="text-lg font-semibold">Reset Puzzle?</div>
+            <div className="mt-2 text-sm text-slate-700">This will reset only the current puzzle to its starting state. Your last saved progress can be restored with the Load button. Proceed?</div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowConfirmReset(false)}
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleResetPuzzle();
+                  setShowConfirmReset(false);
+                }}
+                className="rounded-xl bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm"
+              >
+                Yes, Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* responsive overlay so tiger shows through on all devices */}
       <div className="absolute inset-0 pointer-events-none overlay" />
 
@@ -1010,10 +1497,27 @@ export default function Page() {
         <div className="rounded-3xl controls-style p-4 sm:p-5 shadow-xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="inline-block rounded-xl px-3 py-2 controls-style">
+              <div className="inline-block rounded-xl px-3 py-2 controls-style cursor-pointer select-none" onClick={handleHeaderTripleTap}>
                 <div className="text-2xl font-semibold header-title-mobile">Hey Baby, Help Reveal the Hidden Message by Each Sudoku Reveal</div>
                 <div className="text-sm header-subtitle-mobile">Some obstacles are meant to be solved. Not alone. But together.</div>
               </div>
+              {showDebugMenu && (
+                <div className="mt-2 rounded-xl border border-slate-300 bg-white p-3 shadow-sm">
+                  <div className="text-xs font-semibold text-slate-700 mb-2">DEBUG: Jump to Puzzle</div>
+                  <div className="flex flex-wrap gap-1">
+                    {Array.from({ length: maxPuzzles }, (_, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => handleDebugJumpPuzzle(i)}
+                        className="rounded px-2 py-1 text-xs font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300"
+                      >
+                        Puzzle {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="rounded-2xl controls-style p-4 shadow-sm">
@@ -1129,6 +1633,7 @@ export default function Page() {
                 <FinalEnvelope
                   phrase={WORDS.join(" ")}
                   onRestart={handleRestartAll}
+                  onPlayNewSet={handlePlayNewSet}
                 />
               ) : null}
 
@@ -1144,7 +1649,7 @@ export default function Page() {
                   </button>
                   <button
                     type="button"
-                    onClick={handleRestartAll}
+                     onClick={handleResetPuzzle}
                     className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
                   >
                     Restart all
@@ -1268,6 +1773,13 @@ export default function Page() {
             >
               Save
             </button>
+            <button
+              type="button"
+              onClick={loadLastSave}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm"
+            >
+              Load
+            </button>
             {maxHints > 0 && (
               <button
                 type="button"
@@ -1280,10 +1792,17 @@ export default function Page() {
             )}
             <button
               type="button"
-              onClick={handleRestartAll}
+              onClick={() => setShowConfirmReset(true)}
               className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm"
             >
               Restart
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowConfirmRestartAll(true)}
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm text-xs"
+            >
+              Start Over
             </button>
           </div>
 
