@@ -821,30 +821,34 @@ export default function Page() {
 
   return (
     <div
-      className="min-h-screen p-4 sm:p-6"
+      className="min-h-screen p-4 sm:p-6 relative"
       style={{
         backgroundImage: "url('/galaxy-tiger.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
       }}
     >
-      <div className="mx-auto max-w-6xl">
-        <div className="rounded-3xl bg-white/14 p-4 sm:p-5 backdrop-blur-2xl border border-white/25 shadow-xl">
+      {/* subtle dark overlay to help foreground text read while keeping tiger visible */}
+      <div className="absolute inset-0 bg-black/28 pointer-events-none" />
+
+      <div className="mx-auto max-w-6xl relative z-10">
+        <div className="rounded-3xl bg-white/6 p-4 sm:p-5 backdrop-blur-md border border-white/20 shadow-xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-2xl font-semibold text-slate-900">Sudoku Reveal</div>
               <div className="text-slate-700">Some obstacles are meant to be solved. Not alone. But together.</div>
             </div>
 
-            <div className="rounded-2xl bg-white/16 p-4 backdrop-blur-2xl border border-white/25 shadow-xl">
+            <div className="rounded-2xl bg-white/6 p-4 backdrop-blur-md border border-white/20 shadow-xl">
               <div className="text-xs uppercase tracking-wide text-slate-500">Your words</div>
               <div className="mt-1 text-lg font-semibold text-slate-900">{phrase}</div>
             </div>
           </div>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
-            <div className="rounded-2xl bg-white/16 p-4 sm:p-5 backdrop-blur-2xl border border-white/25 shadow-xl">
+            <div className="rounded-2xl bg-white/6 p-4 sm:p-5 backdrop-blur-md border border-white/20 shadow-xl">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="text-sm text-slate-500">{PUZZLES[puzzleIndex].name}</div>
@@ -959,7 +963,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white/16 p-5 backdrop-blur-2xl border border-white/25 shadow-xl">
+            <div className="rounded-2xl bg-white/6 p-5 backdrop-blur-md border border-white/20 shadow-xl">
               <div className="text-base font-semibold text-slate-900">A note, not a spoiler</div>
               <div className="mt-2 text-sm text-slate-700">
                 Some obstacles are meant to be solved.
