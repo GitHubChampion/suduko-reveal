@@ -337,23 +337,8 @@ const PUZZLE_DATA_SET2: Array<{ name: string; grid: Grid; solution: Grid }> = [
   },
 ];
 
-// Sort puzzles by difficulty and select: 1 Easy, 2 Medium, 2 Hard (no Expert)
-const PUZZLES = (() => {
-  const byDifficulty = PUZZLE_DATA.reduce((acc, puzzle) => {
-    const diff = getDifficulty(puzzle.grid);
-    if (!acc[diff]) acc[diff] = [];
-    acc[diff].push(puzzle);
-    return acc;
-  }, {} as Record<string, typeof PUZZLE_DATA>);
-
-  const selected = [
-    ...(byDifficulty["Easy"] || []).slice(0, 1),
-    ...(byDifficulty["Medium"] || []).slice(0, 2),
-    ...(byDifficulty["Hard"] || []).slice(0, 2),
-  ];
-
-  return selected;
-})();
+// Use all puzzles in original order
+const PUZZLES = PUZZLE_DATA;
 
 // Sort and select puzzles from Set 2
 const PUZZLES_SET2 = (() => {
