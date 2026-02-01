@@ -837,14 +837,14 @@ export default function Page() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="inline-block rounded-xl px-3 py-2 controls-style">
-                <div className="text-2xl font-semibold header-title-mobile">Sudoku Reveal</div>
+                <div className="text-2xl font-semibold header-title-mobile">Hey Baby, Help Reveal the Hidden Message by Each Sudoku Reveal</div>
                 <div className="text-sm header-subtitle-mobile">Some obstacles are meant to be solved. Not alone. But together.</div>
               </div>
             </div>
 
             <div className="rounded-2xl controls-style p-4 shadow-sm">
               <div className="text-xs uppercase tracking-wide text-slate-500">Your words</div>
-              <div className="mt-1 text-lg font-semibold text-slate-900">{phrase}</div>
+              <div className="mt-1 text-lg font-semibold text-blue-600">{phrase}</div>
             </div>
           </div>
 
