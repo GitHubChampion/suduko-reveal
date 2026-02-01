@@ -832,7 +832,7 @@ export default function Page() {
       {/* responsive overlay so tiger shows through on all devices */}
       <div className="absolute inset-0 pointer-events-none overlay" />
 
-      <div className="mx-auto max-w-6xl relative z-10">
+      <div className="mx-auto max-w-6xl relative z-10 pb-48 sm:pb-0">
         <div className="rounded-3xl controls-style p-4 sm:p-5 shadow-xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>

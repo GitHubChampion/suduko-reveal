@@ -117,12 +117,15 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
   }
   .mobile-grid-puzzle {
     order: 3;
+    width: 100%;
   }
   .mobile-grid-sidebar {
     order: 1;
+    width: 100%;
   }
 }
 
@@ -145,6 +148,13 @@ body {
   .header-subtitle-mobile {
     color: #334155 !important; /* slate-700 */
     text-shadow: none !important;
+  }
+}
+
+/* Add bottom padding on mobile to prevent sticky keypad from blocking content */
+@media (max-width: 639px) {
+  .mx-auto.max-w-6xl.relative.z-10 {
+    padding-bottom: 14rem; /* account for sticky keypad height */
   }
 }
 
