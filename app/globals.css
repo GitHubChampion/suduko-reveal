@@ -165,3 +165,96 @@ body {
     color: #cbd5e1; /* lighter text in dark mode if necessary */
   }
 }
+
+/* === ANIMATIONS === */
+
+/* Smooth fade-in and scale for modals */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-modal {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+/* Cell selection highlight with subtle pulse */
+@keyframes cellSelect {
+  0% {
+    box-shadow: inset 0 0 0 2px rgba(14, 165, 233, 0.2);
+  }
+  100% {
+    box-shadow: inset 0 0 0 2px rgba(14, 165, 233, 0.4);
+  }
+}
+
+.animate-cell-select {
+  animation: cellSelect 0.4s ease-in-out forwards;
+}
+
+/* Number placement bounce and fade */
+@keyframes numberPlaced {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-number-place {
+  animation: numberPlaced 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Smooth transitions for all interactive elements */
+.cell-button {
+  transition: all 0.15s ease-out;
+}
+
+.cell-button:active {
+  transform: scale(0.97);
+}
+
+/* Envelope reveal animation */
+@keyframes envelopeOpen {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-envelope {
+  animation: envelopeOpen 0.5s ease-out 0.2s both;
+}
+
+/* Conflict cell shake animation */
+@keyframes cellShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+.animate-cell-shake {
+  animation: cellShake 0.4s ease-in-out;
+}

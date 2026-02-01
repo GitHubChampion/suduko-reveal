@@ -35,10 +35,52 @@ type Action =
   | { kind: "setNotes"; r: number; c: number; prev: number[]; next: number[] };
 
 const STORAGE_KEY = "sudokuReveal.valentine.v1";
+const HINTS_STORAGE_KEY = "sudokuReveal.hints.v1";
 
 const WORDS = ["WILL", "YOU", "BE", "MY", "VALENTINE"]; // One word per puzzle.
 
-const PUZZLES: Array<{ name: string; grid: Grid; solution: Grid }> = [
+// Difficulty levels based on empty cells: Easy (45-50), Medium (51-56), Hard (57-62), Expert (63+)
+const getDifficulty = (grid: Grid): "Easy" | "Medium" | "Hard" | "Expert" => {
+  const emptyCells = grid.flat().filter((v) => v === 0).length;
+  if (emptyCells <= 50) return "Easy";
+  if (emptyCells <= 56) return "Medium";
+  if (emptyCells <= 62) return "Hard";
+  return "Expert";
+};
+
+const getDifficultyColor = (difficulty: string): string => {
+  switch (difficulty) {
+    case "Easy":
+      return "#10b981"; // green
+    case "Medium":
+      return "#f59e0b"; // amber
+    case "Hard":
+      return "#ef4444"; // red
+    case "Expert":
+      return "#8b5cf6"; // purple
+    default:
+      return "#6b7280";
+  }
+};
+
+// Get border opacity based on difficulty (more transparent for harder puzzles)
+const getBorderOpacity = (difficulty: string): number => {
+  switch (difficulty) {
+    case "Easy":
+      return 1; // fully opaque
+    case "Medium":
+      return 0.7; // 70% opaque
+    case "Hard":
+      return 0.5; // 50% opaque
+    case "Expert":
+      return 0.3; // 30% opaque
+    default:
+      return 1;
+  }
+};
+
+// Raw puzzle data (will be sorted by difficulty)
+const PUZZLE_DATA: Array<{ name: string; grid: Grid; solution: Grid }> = [
   {
     name: "Puzzle 1",
     grid: [
@@ -166,9 +208,46 @@ const PUZZLES: Array<{ name: string; grid: Grid; solution: Grid }> = [
   },
 ];
 
+// Sort puzzles by difficulty (Easy → Expert) for progressive gameplay
+const PUZZLES = PUZZLE_DATA.sort((a, b) => {
+  const diffOrder: Record<string, number> = { "Easy": 0, "Medium": 1, "Hard": 2, "Expert": 3 };
+  const diffA = getDifficulty(a.grid);
+  const diffB = getDifficulty(b.grid);
+  return diffOrder[diffA] - diffOrder[diffB];
+});
+
+// Smart hint: Get possible candidates for a cell
+function getCandidates(grid: Grid, r: number, c: number, solution: Grid): Set<number> {
+  if (grid[r][c] !== 0) return new Set();
+  
+  const candidates = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  
+  // Remove values in same row
+  for (let i = 0; i < SIZE; i++) {
+    candidates.delete(grid[r][i]);
+  }
+  
+  // Remove values in same column
+  for (let i = 0; i < SIZE; i++) {
+    candidates.delete(grid[i][c]);
+  }
+  
+  // Remove values in same box
+  const boxR = Math.floor(r / SUB) * SUB;
+  const boxC = Math.floor(c / SUB) * SUB;
+  for (let r2 = boxR; r2 < boxR + SUB; r2++) {
+    for (let c2 = boxC; c2 < boxC + SUB; c2++) {
+      candidates.delete(grid[r2][c2]);
+    }
+  }
+  
+  return candidates;
+}
+
 function cloneGrid(g: Grid): Grid {
   return g.map((row) => row.slice());
 }
+
 
 function makeNotesGrid(): NotesGrid {
   return Array.from({ length: SIZE }, () =>
@@ -277,7 +356,7 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 animate-modal">
     <div className="rounded-3xl controls-style p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -376,9 +455,15 @@ export default function Page() {
   const [status, setStatus] = useState<string>("Tap a number, then tap a square.");
 
   const [wrong, setWrong] = useState<Set<string>>(() => new Set());
+  const [hintsUsed, setHintsUsed] = useState<Map<number, number>>(() => new Map()); // puzzleIndex -> hints used
 
   const [showReveal, setShowReveal] = useState<boolean>(false);
   const [lastUnlockedWord, setLastUnlockedWord] = useState<string>("");
+
+  const difficulty = getDifficulty(PUZZLES[puzzleIndex].grid);
+  const maxHints = difficulty === "Expert" ? 5 : difficulty === "Hard" ? 4 : 0;
+  const currentHintsUsed = hintsUsed.get(puzzleIndex) || 0;
+  const hintsRemaining = Math.max(0, maxHints - currentHintsUsed);
 
   const fixed = useMemo(() => {
     const f = new Set<string>();
@@ -543,6 +628,17 @@ export default function Page() {
     }
   }
 
+  function handleNumberClick(digit: number) {
+    // Fill the selected cell with this number, then deselect it (one-shot)
+    if (notesMode) {
+      toggleCellNote(selected.r, selected.c, digit);
+    } else {
+      setCellValue(selected.r, selected.c, digit);
+    }
+    // Auto-deselect after placing
+    setActiveNumber(null);
+  }
+
   function handleClearSelected() {
     if (fixed.has(cellKey(selected.r, selected.c))) return;
     if (notesMode) {
@@ -631,6 +727,12 @@ export default function Page() {
   }
 
   function handleNextPuzzle() {
+    // Check if current puzzle is solved before allowing next
+    if (puzzleIndex < maxPuzzles - 1 && !isSolved(grid, PUZZLES[puzzleIndex].solution)) {
+      setStatus("Complete this puzzle first!");
+      return;
+    }
+    
     const nextIndex = Math.min(puzzleIndex + 1, maxPuzzles - 1);
     setPuzzleIndex(nextIndex);
     setGrid(cloneGrid(PUZZLES[nextIndex].grid));
@@ -656,12 +758,58 @@ export default function Page() {
     setStatus("Tap a number, then tap a square.");
   }
 
+  function handleHint() {
+    if (hintsRemaining <= 0) {
+      setStatus("No hints remaining for this puzzle.");
+      return;
+    }
+
+    // Find cells by strategy: fewest candidates first (most constrained = most helpful)
+    let bestCell: [number, number] | null = null;
+    let bestCandidateCount = 10;
+    const solution = PUZZLES[puzzleIndex].solution;
+
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        if (grid[r][c] === 0 && !fixed.has(cellKey(r, c))) {
+          const candidates = getCandidates(grid, r, c, solution);
+          // Prefer cells with fewest candidates (most constrained)
+          if (candidates.size > 0 && candidates.size < bestCandidateCount) {
+            bestCell = [r, c];
+            bestCandidateCount = candidates.size;
+          }
+        }
+      }
+    }
+
+    if (!bestCell) {
+      setStatus("No empty cells to hint.");
+      return;
+    }
+
+    const [hintR, hintC] = bestCell;
+    const correctValue = solution[hintR][hintC];
+
+    // Fill it with the correct value
+    setCellValue(hintR, hintC, correctValue);
+
+    // Track hint usage
+    setHintsUsed((prev) => {
+      const next = new Map(prev);
+      next.set(puzzleIndex, (next.get(puzzleIndex) || 0) + 1);
+      return next;
+    });
+
+    setStatus(`Hint used (${bestCandidateCount} option${bestCandidateCount !== 1 ? "s" : ""}). ${Math.max(0, hintsRemaining - 1)} hint${hintsRemaining - 1 !== 1 ? "s" : ""} left.`);
+  }
+
   function saveProgress() {
     const payload = {
       puzzleIndex,
       revealed: Array.from(revealed),
       grid,
       notes: notes.map((row) => row.map((cell) => Array.from(cell).sort((a, b) => a - b))),
+      hintsUsed: Array.from(hintsUsed.entries()),
     };
     serializeState(payload);
     setStatus("Saved. Come back anytime.");
@@ -696,6 +844,12 @@ export default function Page() {
     }
 
     setRevealed(new Set<number>(revArr.filter((n: any) => typeof n === "number")));
+    
+    // Restore hints used
+    if (Array.isArray(saved.hintsUsed)) {
+      setHintsUsed(new Map(saved.hintsUsed.filter((entry: any[]) => Array.isArray(entry) && entry.length === 2)));
+    }
+    
     setUndoStack([]);
     setRedoStack([]);
     setSelected({ r: 0, c: 0 });
@@ -816,6 +970,17 @@ export default function Page() {
       >
         Save
       </button>
+
+      {maxHints > 0 && (
+        <button
+          type="button"
+          onClick={handleHint}
+          disabled={hintsRemaining === 0}
+          className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-900 shadow-sm hover:bg-amber-100 disabled:opacity-50"
+        >
+          💡 Hint ({hintsRemaining})
+        </button>
+      )}
     </div>
   );
 
@@ -843,7 +1008,7 @@ export default function Page() {
             </div>
 
             <div className="rounded-2xl controls-style p-4 shadow-sm">
-              <div className="text-xs uppercase tracking-wide text-slate-500">Your words</div>
+              <div className="text-xs uppercase tracking-wide text-slate-500">Reveal your secret message</div>
               <div className="mt-1 text-lg font-semibold text-blue-600">{phrase}</div>
             </div>
           </div>
@@ -852,8 +1017,21 @@ export default function Page() {
             <div className="rounded-2xl controls-style p-4 sm:p-5 shadow-sm mobile-grid-puzzle">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <div className="text-sm text-slate-500">{PUZZLES[puzzleIndex].name}</div>
-                  <div className="text-base font-semibold text-slate-900">Tap a number, then tap a square.</div>
+                  <div className="text-sm text-slate-500">Level {puzzleIndex + 1} - {difficulty}</div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span
+                      className="px-2 py-1 rounded-full text-xs font-semibold text-white"
+                      style={{ backgroundColor: getDifficultyColor(difficulty) }}
+                    >
+                      {difficulty}
+                    </span>
+                    {maxHints > 0 && (
+                      <span className="text-xs text-slate-600">
+                        💡 {hintsRemaining}/{maxHints} hints
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-base font-semibold text-slate-900 mt-2">Tap a number, then tap a square.</div>
                 </div>
                 <div className="text-sm text-slate-600">Word {puzzleIndex + 1} of {maxPuzzles}</div>
               </div>
@@ -892,16 +1070,19 @@ export default function Page() {
                             key={key}
                             type="button"
                             onClick={() => handleCellTap(r, c)}
-                            className={`relative h-11 w-11 sm:h-12 sm:w-12 select-none border border-slate-200 transition
+                            className={`cell-button relative h-11 w-11 sm:h-12 sm:w-12 select-none transition-all
                               ${isFixed ? "text-slate-900" : "text-slate-700"}
-                              ${isConflict ? "bg-rose-50" : isWrong ? "bg-amber-50" : isSel ? "bg-sky-100" : isHighlighted ? "bg-sky-50" : "bg-white"}
+                              ${isConflict ? "bg-rose-50 animate-cell-shake" : isWrong ? "bg-amber-50" : isSel ? "bg-sky-100 animate-cell-select" : isHighlighted ? "bg-sky-50" : "bg-white"}
                               ${showSameNumberAccent ? "ring-2 ring-slate-900/10" : ""}
                             `}
                             style={{
-                              borderTopWidth: thickTop ? 2 : 1,
-                              borderLeftWidth: thickLeft ? 2 : 1,
-                              borderBottomWidth: thickBottom ? 2 : 1,
-                              borderRightWidth: thickRight ? 2 : 1,
+                              borderTopWidth: thickTop ? 3 : 1,
+                              borderLeftWidth: thickLeft ? 3 : 1,
+                              borderBottomWidth: thickBottom ? 3 : 1,
+                              borderRightWidth: thickRight ? 3 : 1,
+                              borderColor: thickTop || thickLeft || thickBottom || thickRight 
+                                ? `rgba(51, 65, 85, ${getBorderOpacity(difficulty)})` 
+                                : `rgba(203, 213, 225, ${getBorderOpacity(difficulty)})`,
                             }}
                           >
                             {val ? (
@@ -1047,7 +1228,7 @@ export default function Page() {
               <button
                 key={d}
                 type="button"
-                onClick={() => setActiveNumber((prev) => (prev === d ? null : d))}
+                onClick={() => handleNumberClick(d)}
                 className={`rounded-xl border px-0 py-3 text-lg h-11 font-semibold shadow-sm ${
                   activeNumber === d ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-800 border-slate-200"
                 }`}
@@ -1072,6 +1253,16 @@ export default function Page() {
             >
               Save
             </button>
+            {maxHints > 0 && (
+              <button
+                type="button"
+                onClick={handleHint}
+                disabled={hintsRemaining === 0}
+                className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900 shadow-sm disabled:opacity-50"
+              >
+                💡({hintsRemaining})
+              </button>
+            )}
             <button
               type="button"
               onClick={handleRestartAll}
@@ -1096,7 +1287,7 @@ export default function Page() {
               <button
                 key={d}
                 type="button"
-                onClick={() => setActiveNumber((prev) => (prev === d ? null : d))}
+                onClick={() => handleNumberClick(d)}
                 className={`rounded-xl border px-4 py-2 text-base font-semibold shadow-sm ${
                   activeNumber === d ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-800 border-slate-200"
                 }`}
@@ -1112,6 +1303,16 @@ export default function Page() {
             >
               None
             </button>
+            {maxHints > 0 && (
+              <button
+                type="button"
+                onClick={handleHint}
+                disabled={hintsRemaining === 0}
+                className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-base font-semibold text-amber-900 shadow-sm hover:bg-amber-100 disabled:opacity-50 ml-auto"
+              >
+                💡 Hint ({hintsRemaining})
+              </button>
+            )}
           </div>
         </div>
       </div>
