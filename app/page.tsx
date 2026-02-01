@@ -1501,11 +1501,11 @@ export default function Page() {
                 <div className="text-2xl font-semibold header-title-mobile">Hey Baby, Help Reveal the Hidden Message by Each Sudoku Reveal</div>
                 <div className="text-sm header-subtitle-mobile">Some obstacles are meant to be solved. Not alone. But together.</div>
               </div>
-              {showDebugMenu && (
-                <div className="mt-2 rounded-xl border border-slate-300 bg-white p-3 shadow-sm">
+              {showDebugMenu && puzzleSet === 1 && (
+                <div className="mt-2 w-full rounded-xl border border-slate-300 bg-white p-3 shadow-sm">
                   <div className="text-xs font-semibold text-slate-700 mb-2">DEBUG: Jump to Puzzle</div>
                   <div className="flex flex-wrap gap-1">
-                    {Array.from({ length: maxPuzzles }, (_, i) => (
+                    {Array.from({ length: PUZZLES.length }, (_, i) => (
                       <button
                         key={i}
                         type="button"
