@@ -553,6 +553,8 @@ export default function Page() {
   }
 
   function handleUndo() {
+    // Clear wrong highlights when undoing
+    setWrong(new Set());
     setUndoStack((prev) => {
       if (prev.length === 0) return prev;
       const action = prev[prev.length - 1];
@@ -564,6 +566,8 @@ export default function Page() {
   }
 
   function handleRedo() {
+    // Clear wrong highlights when redoing
+    setWrong(new Set());
     setRedoStack((prev) => {
       if (prev.length === 0) return prev;
       const action = prev[prev.length - 1];
@@ -576,6 +580,9 @@ export default function Page() {
 
   function setCellValue(r: number, c: number, v: number) {
     if (fixed.has(cellKey(r, c))) return;
+
+    // Clear wrong highlights when player makes changes
+    setWrong(new Set());
 
     setGrid((prev) => {
       const next = cloneGrid(prev);
@@ -676,16 +683,18 @@ export default function Page() {
     const current = PUZZLES[puzzleIndex];
 
     // Mistake check against the solution.
-    // Mark any filled cell that does not match the solution.
+    // Mark any PLAYER-entered cell (not fixed) that does not match the solution.
     const wrongCells = new Set<string>();
     let wrongCount = 0;
 
     for (let r = 0; r < SIZE; r++) {
       for (let c = 0; c < SIZE; c++) {
         const v = grid[r][c];
+        const key = cellKey(r, c);
         if (!v) continue;
-        if (v !== current.solution[r][c]) {
-          wrongCells.add(cellKey(r, c));
+        // Only mark non-fixed cells as wrong
+        if (!fixed.has(key) && v !== current.solution[r][c]) {
+          wrongCells.add(key);
           wrongCount++;
         }
       }
@@ -1031,7 +1040,10 @@ export default function Page() {
                       </span>
                     )}
                   </div>
-                  <div className="text-base font-semibold text-slate-900 mt-2">Tap a number, then tap a square.</div>
+                  <div className="text-base font-semibold text-slate-900 mt-2">
+                    <span className="hidden sm:inline">Click a square, then click a number.</span>
+                    <span className="sm:hidden">Tap a number, then tap a square.</span>
+                  </div>
                 </div>
                 <div className="text-sm text-slate-600">Word {puzzleIndex + 1} of {maxPuzzles}</div>
               </div>
@@ -1071,24 +1083,27 @@ export default function Page() {
                             type="button"
                             onClick={() => handleCellTap(r, c)}
                             className={`cell-button relative h-11 w-11 sm:h-12 sm:w-12 select-none transition-all
-                              ${isFixed ? "text-slate-900" : "text-slate-700"}
-                              ${isConflict ? "bg-rose-50 animate-cell-shake" : isWrong ? "bg-amber-50" : isSel ? "bg-sky-100 animate-cell-select" : isHighlighted ? "bg-sky-50" : "bg-white"}
-                              ${showSameNumberAccent ? "ring-2 ring-slate-900/10" : ""}
+                              ${isFixed ? "font-bold text-slate-900" : val ? "font-semibold text-blue-600" : "text-slate-400"}
+                              ${isConflict ? "bg-rose-100 animate-cell-shake" : isWrong ? "bg-amber-100" : isFixed ? "bg-slate-100" : isSel ? "bg-sky-100 animate-cell-select" : isHighlighted ? "bg-sky-50" : val ? "bg-white" : "bg-slate-50"}
+                              ${showSameNumberAccent ? "ring-2 ring-blue-400" : ""}
                             `}
                             style={{
                               borderTopWidth: thickTop ? 3 : 1,
                               borderLeftWidth: thickLeft ? 3 : 1,
                               borderBottomWidth: thickBottom ? 3 : 1,
                               borderRightWidth: thickRight ? 3 : 1,
-                              borderColor: thickTop || thickLeft || thickBottom || thickRight 
-                                ? `rgba(51, 65, 85, ${getBorderOpacity(difficulty)})` 
-                                : `rgba(203, 213, 225, ${getBorderOpacity(difficulty)})`,
+                              borderColor: (() => {
+                                const opacity = getBorderOpacity(difficulty);
+                                const thickColor = `rgba(51, 65, 85, ${opacity})`; // dark slate for 3x3 boxes
+                                const thinColor = `rgba(203, 213, 225, ${opacity})`; // light slate for cells
+                                return (thickTop || thickLeft || thickBottom || thickRight) ? thickColor : thinColor;
+                              })(),
                             }}
                           >
                             {val ? (
-                              <span className={`text-lg font-semibold ${isFixed ? "" : ""}`}>{val}</span>
+                              <span className={`text-lg ${isFixed ? "font-extrabold" : "font-bold"}`}>{val}</span>
                             ) : (
-                              <span className="grid h-full w-full grid-cols-3 grid-rows-3 p-1 text-[9px] text-slate-500">
+                              <span className="grid h-full w-full grid-cols-3 grid-rows-3 p-1 text-[9px] text-slate-400">
                                 {digitsRow().map((d) => (
                                   <span key={d} className="flex items-center justify-center">
                                     {cellNotes.has(d) ? d : ""}
