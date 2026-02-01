@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-top: env(safe-area-inset-top);
+  --tile-size: 44px;
 }
 
 @theme inline {
@@ -23,4 +26,95 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 640px) {
+  :root {
+    --tile-size: 36px;
+  }
+
+  button {
+    touch-action: manipulation;
+  }
+
+  .safe-bottom-padding {
+    padding-bottom: calc(0.75rem + var(--safe-bottom));
+  }
+}
+
+/* Overlay backgrounds tuned per breakpoint so the tiger shows through on all devices */
+.overlay {
+  background: rgba(0,0,0,0.08);
+}
+
+@media (min-width: 640px) {
+  .overlay {
+    background: rgba(0,0,0,0.10);
+  }
+}
+
+@media (min-width: 1024px) {
+  .overlay {
+    background: rgba(0,0,0,0.28);
+  }
+}
+
+/* Transparent panel with subtle blur and border to keep background visible */
+.panel-transparent {
+  background: transparent !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Strong readable text shadow for transparent panels */
+.text-strong {
+  color: white !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.02);
+}
+
+@media (min-width: 1024px) {
+  .text-strong {
+    color: #0f172a !important; /* slate-900 */
+    text-shadow: none;
+  }
+}
+
+/* Card with slightly deeper milky background used for readable text boxes */
+.card-deep {
+  /* match the controls box: light slate translucent with blur */
+  background: rgba(248,250,252,0.60); /* roughly bg-slate-50/60 */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12); /* similar to border-white/20 */
+  box-shadow: 0 6px 18px rgba(8,12,20,0.04);
+  color: #334155; /* slate-700 for body text */
+}
+
+/* Replicate controls box look as a reusable class */
+.controls-style {
+  background: rgba(248,250,252,0.92) !important; /* force white translucent */
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important; /* stronger border */
+  color: #334155 !important; /* slate-700 */
+  padding: 1rem; /* default padding; override where needed */
+  box-shadow: 0 4px 12px rgba(8,12,20,0.04) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .controls-style {
+    background: rgba(248,250,252,0.92) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    color: #334155 !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-deep {
+    background: rgba(15,23,42,0.48); /* dark translucent fallback */
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #cbd5e1; /* lighter text in dark mode if necessary */
+  }
 }

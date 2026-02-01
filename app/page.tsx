@@ -278,7 +278,7 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
 
   return (
     <div className="mt-5">
-      <div className="rounded-3xl border border-slate-100 bg-gradient-to-br from-sky-50 via-white to-amber-50 p-5">
+    <div className="rounded-3xl controls-style p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-amber-50 px-3 py-1 text-xs font-semibold tracking-wide text-amber-900">
@@ -302,7 +302,7 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="group relative w-full max-w-sm overflow-hidden rounded-3xl border border-amber-200/70 bg-gradient-to-br from-amber-100 via-yellow-50 to-sky-100 p-6 shadow-sm"
+            className="group relative w-full max-w-sm overflow-hidden rounded-3xl border border-amber-200/70 controls-style p-6 shadow-sm"
           >
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-16 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-sky-500/20 blur-3xl" />
@@ -320,21 +320,21 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
 
       {open ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="relative w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-2xl">
+          <div className="relative w-full max-w-md overflow-hidden rounded-[28px] controls-style shadow-2xl">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-sky-500/25 blur-3xl" />
               <div className="absolute -top-16 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-amber-400/20 blur-3xl" />
             </div>
 
-            <div className="p-[1px] bg-gradient-to-br from-amber-200 via-yellow-300/60 to-sky-300/60">
-              <div className="rounded-[27px] bg-white">
+            <div className="p-[1px]">
+              <div className="rounded-[27px] controls-style">
                 <div className="p-6">
                   <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-amber-50 px-3 py-1 text-xs font-semibold tracking-wide text-amber-900">
                     <span className="text-base">💙</span>
                     The message
                   </div>
 
-                  <div className="mt-4 rounded-2xl border border-slate-100 bg-gradient-to-br from-sky-50 via-white to-amber-50 p-5">
+                  <div className="mt-4 rounded-2xl controls-style p-5">
                     <div className="text-xs uppercase tracking-wide text-slate-500">Will you be my Valentine?</div>
                     <div className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900">{phrase}</div>
                   </div>
@@ -347,7 +347,7 @@ function FinalEnvelope({ phrase, onRestart }: { phrase: string; onRestart: () =>
                     >
                       Close
                     </button>
-                  </div>
+                  </div>  
                 </div>
               </div>
             </div>
@@ -821,34 +821,35 @@ export default function Page() {
 
   return (
     <div
-      className="min-h-screen p-4 sm:p-6 relative"
+      className="min-h-screen p-4 sm:p-6 relative lg:bg-fixed"
       style={{
         backgroundImage: "url('/galaxy-tiger.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
       }}
     >
-      {/* subtle dark overlay to help foreground text read while keeping tiger visible */}
-      <div className="absolute inset-0 bg-black/28 pointer-events-none" />
+      {/* responsive overlay so tiger shows through on all devices */}
+      <div className="absolute inset-0 pointer-events-none overlay" />
 
       <div className="mx-auto max-w-6xl relative z-10">
-        <div className="rounded-3xl bg-white/6 p-4 sm:p-5 backdrop-blur-md border border-white/20 shadow-xl">
+        <div className="rounded-3xl controls-style p-4 sm:p-5 shadow-xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="text-2xl font-semibold text-slate-900">Sudoku Reveal</div>
-              <div className="text-slate-700">Some obstacles are meant to be solved. Not alone. But together.</div>
+              <div className="inline-block rounded-xl px-3 py-2 controls-style">
+                <div className="text-2xl font-semibold text-2xl text-strong lg:text-slate-900">Sudoku Reveal</div>
+                <div className="text-sm text-strong lg:text-slate-700">Some obstacles are meant to be solved. Not alone. But together.</div>
+              </div>
             </div>
 
-            <div className="rounded-2xl bg-white/6 p-4 backdrop-blur-md border border-white/20 shadow-xl">
+            <div className="rounded-2xl controls-style p-4 shadow-sm">
               <div className="text-xs uppercase tracking-wide text-slate-500">Your words</div>
               <div className="mt-1 text-lg font-semibold text-slate-900">{phrase}</div>
             </div>
           </div>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
-            <div className="rounded-2xl bg-white/6 p-4 sm:p-5 backdrop-blur-md border border-white/20 shadow-xl">
+            <div className="rounded-2xl controls-style p-4 sm:p-5 shadow-sm">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="text-sm text-slate-500">{PUZZLES[puzzleIndex].name}</div>
@@ -860,11 +861,11 @@ export default function Page() {
               <div className="mt-3 hidden sm:block">{compactControls}</div>
 
               <div className="mt-4 overflow-auto">
-                <div className="inline-block rounded-xl border border-slate-200 bg-white">
+                <div className="inline-block rounded-xl border border-slate-200 controls-style">
                   <div
                     className="grid"
                     style={{
-                      gridTemplateColumns: `repeat(${SIZE}, minmax(0, 44px))`,
+                      gridTemplateColumns: `repeat(${SIZE}, minmax(0, var(--tile-size)))`,
                     }}
                   >
                     {grid.map((row, r) =>
@@ -963,7 +964,7 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="rounded-2xl bg-white/6 p-5 backdrop-blur-md border border-white/20 shadow-xl">
+            <div className="rounded-2xl controls-style p-5 shadow-sm">
               <div className="text-base font-semibold text-slate-900">A note, not a spoiler</div>
               <div className="mt-2 text-sm text-slate-700">
                 Some obstacles are meant to be solved.
@@ -973,7 +974,7 @@ export default function Page() {
                 But together.
               </div>
 
-              <div className="mt-4 rounded-2xl bg-white/15 backdrop-blur-xl border border-white/25 p-5 text-sm text-slate-800">
+              <div className="mt-4 rounded-2xl controls-style p-5 text-sm text-slate-800">
                 <div className="font-semibold text-slate-900">How to play</div>
                 <div className="mt-2">Choose a number, then tap squares. Turn on Notes to pencil in possibilities.</div>
               </div>
@@ -993,7 +994,7 @@ export default function Page() {
       </div>
 
       {/* Mobile sticky keypad */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 p-3 backdrop-blur sm:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 controls-style p-3 sm:hidden safe-bottom-padding" style={{paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))'}}>
         <div className="mx-auto max-w-6xl">
           <div className="flex items-center justify-between gap-2">
             <button
@@ -1047,7 +1048,7 @@ export default function Page() {
                 key={d}
                 type="button"
                 onClick={() => setActiveNumber((prev) => (prev === d ? null : d))}
-                className={`rounded-xl border px-0 py-2 text-base font-semibold shadow-sm ${
+                className={`rounded-xl border px-0 py-3 text-lg h-11 font-semibold shadow-sm ${
                   activeNumber === d ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-800 border-slate-200"
                 }`}
               >
@@ -1088,7 +1089,7 @@ export default function Page() {
 
       {/* Desktop number selector */}
       <div className="mx-auto mt-4 hidden max-w-6xl sm:block">
-        <div className="rounded-2xl bg-white/75 p-3 backdrop-blur-md shadow-sm">
+        <div className="rounded-2xl controls-style p-3 shadow-sm">
           <div className="flex flex-wrap items-center gap-2">
             <div className="text-sm font-semibold text-slate-800 mr-2">Number:</div>
             {digitsRow().map((d) => (
@@ -1099,6 +1100,7 @@ export default function Page() {
                 className={`rounded-xl border px-4 py-2 text-base font-semibold shadow-sm ${
                   activeNumber === d ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-800 border-slate-200"
                 }`}
+                style={{minWidth: 44, minHeight: 44}}
               >
                 {d}
               </button>
@@ -1126,8 +1128,8 @@ export default function Page() {
             </div>
 
             {/* Gold rim */}
-            <div className="p-[1px] bg-gradient-to-br from-amber-200 via-yellow-300/60 to-sky-300/60">
-              <div className="rounded-[27px] bg-white">
+            <div className="p-[1px]">
+              <div className="rounded-[27px] controls-style">
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -1149,18 +1151,18 @@ export default function Page() {
                     </button>
                   </div>
 
-                  <div className="mt-5 rounded-2xl border border-slate-100 bg-gradient-to-br from-sky-50 via-white to-amber-50 p-4">
+                  <div className="mt-5 rounded-2xl controls-style p-4">
                     <div className="text-xs uppercase tracking-wide text-slate-500">Your new word</div>
                     <div className="mt-2 flex items-center justify-between gap-3">
                       <div className="text-4xl font-extrabold tracking-tight text-slate-900">{lastUnlockedWord}</div>
-                      <div className="rounded-xl bg-white px-3 py-2 shadow-sm border border-slate-100">
+                      <div className="rounded-xl controls-style px-3 py-2 shadow-sm border border-slate-100">
                         <div className="text-[10px] uppercase tracking-wider text-slate-500">Message</div>
                         <div className="mt-0.5 text-sm font-semibold text-slate-900">{phrase}</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                  <div className="mt-4 rounded-2xl controls-style p-4">
                     <div className="text-sm font-semibold text-slate-900">Ready to continue our journey?</div>
                     <div className="mt-1 text-sm text-slate-700">If you cannot finish in one sitting, it will be right here when you come back.</div>
                   </div>
