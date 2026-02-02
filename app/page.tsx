@@ -1263,6 +1263,8 @@ export default function Page() {
     setActiveNumber(null);
     setNotesMode(false);
     setWrong(new Set());
+    // Mark all previous puzzles (and current) as revealed
+    setRevealed(new Set(Array.from({ length: idx + 1 }, (_, i) => i)));
     setShowDebugMenu(false);
     setStatus(`Jumped to Level ${idx + 1}.`);
     saveProgress();
@@ -1489,7 +1491,7 @@ export default function Page() {
               {showDebugMenu && puzzleSet === 1 && (
                 <div className="mt-2 w-full rounded-xl border border-slate-300 bg-white p-3 shadow-sm">
                   <div className="text-xs font-semibold text-slate-700 mb-2">DEBUG: Jump to Puzzle</div>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1 mb-2">
                     {Array.from({ length: PUZZLES.length }, (_, i) => (
                       <button
                         key={i}
@@ -1501,6 +1503,21 @@ export default function Page() {
                       </button>
                     ))}
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRevealed(new Set(Array.from({ length: PUZZLES.length }, (_, i) => i)));
+                      setStatus('DEBUG: All puzzles revealed.');
+                      // Optionally scroll to the envelope if needed
+                      setTimeout(() => {
+                        const env = document.querySelector('.animate-modal');
+                        if (env) env.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }, 300);
+                    }}
+                    className="mt-2 rounded px-2 py-1 text-xs font-semibold bg-rose-200 text-rose-800 hover:bg-rose-300"
+                  >
+                    Show Ending (Reveal All)
+                  </button>
                 </div>
               )}
             </div>
@@ -1634,7 +1651,7 @@ export default function Page() {
                   </button>
                   <button
                     type="button"
-                     onClick={handleResetPuzzle}
+                    onClick={handleRestartAll}
                     className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
                   >
                     Restart all
