@@ -567,6 +567,7 @@ function Confetti() {
 function FinalEnvelope({ phrase, onRestart, onPlayNewSet }: { phrase: string; onRestart: () => void; onPlayNewSet: () => void }) {
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<"envelope" | "letter" | "yes-no" | "reconsidered">("envelope");
+  const [showFinalConfetti, setShowFinalConfetti] = useState(false);
   const words = phrase.split(" ");
 
   const handleOpen = () => {
@@ -584,7 +585,7 @@ function FinalEnvelope({ phrase, onRestart, onPlayNewSet }: { phrase: string; on
 
   return (
     <div className="mt-5 animate-modal">
-      {open && <Confetti />}
+      {(open || showFinalConfetti) && <Confetti />}
       <div className="rounded-3xl controls-style p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -753,7 +754,11 @@ function FinalEnvelope({ phrase, onRestart, onPlayNewSet }: { phrase: string; on
                         <button
                           type="button"
                           onClick={() => {
-                            setOpen(false);
+                            setShowFinalConfetti(true);
+                            setTimeout(() => {
+                              setOpen(false);
+                              setShowFinalConfetti(false);
+                            }, 1800);
                           }}
                           className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 px-4 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl"
                         >
